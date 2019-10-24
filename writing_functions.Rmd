@@ -1,0 +1,67 @@
+---
+title: "writing functions"
+author: "Duzhi Zhao"
+date: "10/24/2019"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(rvest)
+set.seed(1)
+
+```
+
+```{r}
+x = rnorm(25, mean = 5, sd = 3)
+x - mean(x) / sd(x)
+y = rnorm(25, mean = 1, sd = 0.5)
+```
+
+## Single output: z-score function
+```{r}
+z_score = function(x){
+  (x - mean(x)) / sd(x)
+}
+
+z_score(x = y)
+
+```
+
+```{r}
+z_score = function(x){
+  if (!is.numeric(x)) {
+    stop("Argument should be numeric")
+  } else if (length(x) == 1) {
+    stop("z-scores cannot be computed for length 1 vectors")
+  }
+  z = (x - mean(x)) / sd(x)
+  z
+}
+
+z_score(x = y)
+```
+
+## multiple outputs
+```{r}
+mean_and_sd = function(x) {
+  
+  if (!is.numeric(x)) {
+    stop("Argument x should be numeric")
+  } else if (length(x) == 1) {
+    stop("Cannot be computed for length 1 vectors")
+  }
+  
+  tibble(
+  mean_x = mean(x),
+  sd_x = sd(x)
+  )
+}
+```
+
+```{r}
+mean_and_sd(x = y)
+```
+
