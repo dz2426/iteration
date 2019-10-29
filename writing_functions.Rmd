@@ -75,9 +75,9 @@ mean_and_sd = function(x) {
   }
   
   list(
-  mean_x = mean(x),
-  sd_x = sd(x),
-  z_score = (x - mean(x)) / sd(x)
+    mean_x = mean(x),
+    sd_x = sd(x),
+    z_score = (x - mean(x)) / sd(x)
   )
 }
 ```
@@ -94,7 +94,7 @@ sim_data = tibble(
 )
 
 ls_fit = lm(y ~ x, data = sim_data)
-  
+
 beta0_hat = coef(ls_fit)[1] # extract intercept from Is_fit
 beta1_hat = coef(ls_fit)[2] # extract slope from Is_fit
 
@@ -121,5 +121,58 @@ sim_regression = function(n, beta0, beta1) {
 }
 
 sim_regression(3000, 17, -3)
+```
+
+## Scraping amazon
+```{r}
+url = "https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=1"
+
+dynamite_html = read_html(url)
+
+review_titles = dynamite_html %>%
+  html_nodes("#cm_cr-review_list .review-title") %>%
+  html_text()
+
+review_stars = dynamite_html %>%
+  html_nodes("#cm_cr-review_list .review-rating") %>%
+  html_text()
+
+review_text = dynamite_html %>%
+  html_nodes(".review-text-content span") %>%
+  html_text()
+
+reviews = tibble(
+  title = review_titles,
+  stars = review_stars,
+  text = review_text
+)
+```
+
+```{r}
+read_page_reviews = function(url){
+  dynamite_html = read_html(url)
+  
+  review_titles = dynamite_html %>%
+    html_nodes("#cm_cr-review_list .review-title") %>%
+    html_text()
+  
+  review_stars = dynamite_html %>%
+    html_nodes("#cm_cr-review_list .review-rating") %>%
+    html_text()
+  
+  review_text = dynamite_html %>%
+    html_nodes(".review-text-content span") %>%
+    html_text()
+  
+  reviews = tibble(
+    title = review_titles,
+    stars = review_stars,
+    text = review_text
+  )
+}
+```
+
+```{r}
+read_page_reviews("https://www.amazon.com/product-reviews/B00005JNBQ/ref=cm_cr_arp_d_viewopt_rvwer?ie=UTF8&reviewerType=avp_only_reviews&sortBy=recent&pageNumber=3")
 ```
 
